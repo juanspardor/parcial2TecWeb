@@ -9,6 +9,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AlbumEntity } from './album/album.entity';
 import { TrackEntity } from './track/track.entity';
 import { PerformerEntity } from './performer/performer.entity';
+import { AlbumPerformerModule } from './album-performer/album-performer.module';
 
 
 @Module({
@@ -24,7 +25,8 @@ import { PerformerEntity } from './performer/performer.entity';
       dropSchema: true,
       synchronize: true,
       keepConnectionAlive: true
-    })],
+    }),
+    AlbumPerformerModule],
   controllers: [AppController],
   providers: [AppService],
 })
