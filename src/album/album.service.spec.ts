@@ -5,6 +5,7 @@ import { AlbumService } from './album.service';
 import { AlbumEntity } from './album.entity';
 import { faker } from '@faker-js/faker';
 import { Repository } from 'typeorm';
+import { TypeOrmTestingConfig } from '../shared/testing-utils/typeorm-testing-config';
 
 describe('AlbumService', () => {
   let service: AlbumService;
