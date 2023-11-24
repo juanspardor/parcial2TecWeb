@@ -2,6 +2,9 @@
 /* eslint-disable prettier/prettier */
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn, JoinTable, JoinColumn, ManyToMany } from 'typeorm';
 import { AlbumEntity } from '../album/album.entity';
+
+
+
 @Entity()
 export class PerformerEntity {
     @PrimaryGeneratedColumn('uuid')

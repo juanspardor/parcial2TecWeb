@@ -22,8 +22,23 @@ describe('AlbumService', () => {
 
     service = module.get<AlbumService>(AlbumService);
     repository = module.get<Repository<AlbumEntity>>(getRepositoryToken(AlbumEntity));
+    await seedDatabase();
   });
 
+  const seedDatabase =async () => {
+    repository.clear();
+    albumsList = [];
+    for(let i = 0; i<5; i++){
+      const album: AlbumEntity = await repository.save({
+        nombre: faker.person.firstName(),
+        caraturla: faker.image.url(),
+        fechaLanzamiento: faker.date.birthdate(),
+        descripcion: faker.lorem.sentence()
+      })
+      albumsList.push(album)
+    }
+    
+  }
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
@@ -57,5 +72,26 @@ describe('AlbumService', () => {
 
     await expect(() => service.create(album)).rejects.toHaveProperty("message", "The album has no descripcion")
   })
+
+  it('findAll should return all albums', async () => {
+    const albums: AlbumEntity[] = await service.findAll();
+    expect(albums).not.toBeNull();
+    expect(albums).toHaveLength(albumsList.length);
+  });
+
+  it('findOne should return a album by id', async () => {
+    const storedAlbum: AlbumEntity = albumsList[0];
+    const album: AlbumEntity = await service.findOne(storedAlbum.id);
+    expect(album).not.toBeNull();
+    expect(album.caraturla).toEqual(storedAlbum.caraturla)
+    expect(album.nombre).toEqual(storedAlbum.nombre)
+    expect(album.fechaLanzamiento).toEqual(storedAlbum.fechaLanzamiento)
+    expect(album.descripcion).toEqual(storedAlbum.descripcion)
+
+  });
+
+  it('findOne should throw an exception for an invalid album', async () => {
+    await expect(() => service.findOne("0")).rejects.toHaveProperty("message", "The album with the given id was not found")
+  });
 
 });

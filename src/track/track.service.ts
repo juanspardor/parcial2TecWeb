@@ -5,6 +5,7 @@ import { BusinessError, BusinessLogicException } from '../shared/errors/business
 import { Repository } from 'typeorm';
 import { TrackEntity } from './track.entity';
 import { AlbumEntity } from '../album/album.entity';
+import { AlbumService } from '../album/album.service';
 
 @Injectable()
 export class TrackService {
@@ -12,8 +13,7 @@ export class TrackService {
         @InjectRepository(TrackEntity)
         private readonly trackRepository: Repository<TrackEntity>,
 
-        @InjectRepository(AlbumEntity)
-        private readonly albumRepository: Repository<AlbumEntity>
+        private readonly albumService: AlbumService
     ){}
 
 
@@ -30,9 +30,8 @@ export class TrackService {
     }
 
     async create(albumId: string, track: TrackEntity): Promise<TrackEntity> {
-        const album: AlbumEntity  = await this.albumRepository.findOne({ where: { id: albumId } });
-        if(!album)
-            throw new BusinessLogicException("The album with the given id was not found", BusinessError.NOT_FOUND);
+        const album: AlbumEntity  = await this.albumService.findOne(albumId)
+       
 
         const duracion = track.duracion;
         if(duracion < 0 )

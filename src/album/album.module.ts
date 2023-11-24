@@ -6,6 +6,7 @@ import { AlbumEntity } from './album.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([AlbumEntity])],
-  providers: [AlbumService]
+  providers: [AlbumService],
+  exports: [AlbumService]
 })
 export class AlbumModule {}
