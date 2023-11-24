@@ -27,4 +27,35 @@ describe('AlbumService', () => {
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
+
+  it('should create a album', async () => {
+    const album = {
+      id : "",
+      nombre: faker.person.firstName(),
+      caraturla: faker.image.url(),
+      fechaLanzamiento: faker.date.anytime(),
+      descripcion: faker.lorem.sentence(),
+      tracks: [],
+      performers: []
+    }
+
+    const newAlbum: AlbumEntity = await service.create(album);
+    expect(newAlbum).not.toBeNull();
+
+  } )
+
+  it('create should throw an exception for an album with no desciption',async () => {
+    const album = {
+      id : "",
+      nombre: faker.person.firstName(),
+      caraturla: faker.image.url(),
+      fechaLanzamiento: faker.date.anytime(),
+      descripcion: "",
+      tracks: [],
+      performers: []
+    }
+
+    await expect(() => service.create(album)).rejects.toHaveProperty("message", "The album has no descripcion")
+  })
+
 });
