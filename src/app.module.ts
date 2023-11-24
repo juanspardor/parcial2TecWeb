@@ -10,6 +10,7 @@ import { AlbumEntity } from './album/album.entity';
 import { TrackEntity } from './track/track.entity';
 import { PerformerEntity } from './performer/performer.entity';
 
+
 @Module({
   imports: [AlbumModule, TrackModule, PerformerModule,
     TypeOrmModule.forRoot({

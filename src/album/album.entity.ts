@@ -2,7 +2,7 @@
 /* eslint-disable prettier/prettier */
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn, JoinTable, JoinColumn, ManyToMany } from 'typeorm';
 import { TrackEntity } from '../track/track.entity';
-import { PerformerEntity } from 'src/performer/performer.entity';
+import { PerformerEntity } from '../performer/performer.entity';
 
 @Entity()
 export class AlbumEntity {
@@ -12,6 +12,8 @@ export class AlbumEntity {
     @Column()
     caraturla: string;
 
+    @Column()
+    nombre: string;
 
     @Column()
     fechaLanzamiento: Date;
