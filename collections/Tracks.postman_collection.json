@@ -1,7 +1,7 @@
 {
 	"info": {
-		"_postman_id": "f2d7d9f4-5e8d-4ef9-8491-129b908afed3",
-		"name": "Albums",
+		"_postman_id": "ee21efa3-88ea-4709-b7f7-0f9c87263b03",
+		"name": "Tracks",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "30944733"
 	},
@@ -14,7 +14,7 @@
 					"script": {
 						"exec": [
 							"var data = pm.response.json()",
-							"pm.globals.set(\"album_id\", data.id);",
+							"pm.globals.set(\"album_id1\", data.id);",
 							"",
 							"pm.test(\"Status code is 201\", function () {",
 							"   pm.response.to.have.status(201);",
@@ -29,7 +29,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"nombre\": \"Prueba\", \n    \"caraturla\": \"fotito\",\n    \"fechaLanzamiento\": \"2023-11-24\",\n    \"descripcion\": \"flojo\"\n}",
+					"raw": "{\n    \"nombre\": \"Prueba2\", \n    \"caraturla\": \"fotito\",\n    \"fechaLanzamiento\": \"2023-11-24\",\n    \"descripcion\": \"flojo\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -53,19 +53,17 @@
 			"response": []
 		},
 		{
-			"name": "Add an invalid Album",
+			"name": "Create a Track",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"Status code is 412\", function () {",
-							"   pm.response.to.have.status(412);",
-							"});",
+							"var data = pm.response.json()",
+							"pm.globals.set(\"track_id1\", data.id);",
 							"",
-							"pm.test(\"Get expected error message\", function () {",
-							"   var data = pm.response.json();",
-							"   pm.expect(data.message).to.eql(\"The album has no descripcion\");",
+							"pm.test(\"Status code is 201\", function () {",
+							"   pm.response.to.have.status(201);",
 							"});"
 						],
 						"type": "text/javascript"
@@ -77,7 +75,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"nombre\": \"Prueba\", \n    \"caraturla\": \"fotito\",\n    \"fechaLanzamiento\": \"2023-11-24\",\n    \"descripcion\": \"\"\n}",
+					"raw": "{\n    \"nombre\": \"para bailar la bamba\",\n    \"duracion\": 2,\n    \"album\": { \"id\": \"{{album_id1}}\"}\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -85,7 +83,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:3000/api/v1/albums",
+					"raw": "http://localhost:3000/api/v1/tracks/{{album_id1}}",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -94,20 +92,119 @@
 					"path": [
 						"api",
 						"v1",
-						"albums"
+						"tracks",
+						"{{album_id1}}"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "Get all Albums",
+			"name": "Create an invalid Track",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test('Number of albums > ' + 0, function () {",
+							"pm.test(\"Status code is 412\", function () {",
+							"   pm.response.to.have.status(412);",
+							"});",
+							"",
+							"pm.test(\"Get expected error message\", function () {",
+							"   var data = pm.response.json();",
+							"   pm.expect(data.message).to.eql(\"The duration is negative\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"nombre\": \"para bailar la bamba\",\n    \"duracion\": -2,\n    \"album\": { \"id\": \"{{album_id1}}\"}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/v1/tracks/{{album_id1}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"tracks",
+						"{{album_id1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create a Track with an invalid Album",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", function () {",
+							"   pm.response.to.have.status(404);",
+							"});",
+							"",
+							"pm.test(\"Get expected error message\", function () {",
+							"   var data = pm.response.json();",
+							"   pm.expect(data.message).to.eql(\"The album with the given id was not found\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"nombre\": \"para bailar la bamba\",\n    \"duracion\": -2\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/v1/tracks/00000000-0000-0000-0000-000000000000",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"tracks",
+						"00000000-0000-0000-0000-000000000000"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all Tracks",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Number of tracks > ' + 0, function () {",
 							"   var data = pm.response.json()",
 							"   pm.expect(data.length).to.greaterThan(0)",
 							"});",
@@ -124,7 +221,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:3000/api/v1/albums",
+					"raw": "http://localhost:3000/api/v1/tracks",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -133,14 +230,14 @@
 					"path": [
 						"api",
 						"v1",
-						"albums"
+						"tracks"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "Get a Album",
+			"name": "Get a Track",
 			"event": [
 				{
 					"listen": "test",
@@ -154,18 +251,11 @@
 					}
 				}
 			],
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
 			"request": {
 				"method": "GET",
 				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
 				"url": {
-					"raw": "http://localhost:3000/api/v1/albums/{{album_id}}",
+					"raw": "http://localhost:3000/api/v1/tracks/{{track_id1}}",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -174,15 +264,15 @@
 					"path": [
 						"api",
 						"v1",
-						"albums",
-						"{{album_id}}"
+						"tracks",
+						"{{track_id1}}"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "Get an invalid Album",
+			"name": "Get an invalid track",
 			"event": [
 				{
 					"listen": "test",
@@ -194,7 +284,7 @@
 							"",
 							"pm.test(\"Get expected error message\", function () {",
 							"   var data = pm.response.json();",
-							"   pm.expect(data.message).to.eql(\"The album with the given id was not found\");",
+							"   pm.expect(data.message).to.eql(\"The track with the given id was not found\");",
 							"});"
 						],
 						"type": "text/javascript"
@@ -205,7 +295,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:3000/api/v1/albums/00000000-0000-0000-0000-000000000000",
+					"raw": "http://localhost:3000/api/v1/tracks/00000000-0000-0000-0000-000000000000",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -214,82 +304,7 @@
 					"path": [
 						"api",
 						"v1",
-						"albums",
-						"00000000-0000-0000-0000-000000000000"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Delete a Album",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 204\", function () {",
-							"   pm.response.to.have.status(204);",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "DELETE",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:3000/api/v1/albums/{{album_id}}",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "3000",
-					"path": [
-						"api",
-						"v1",
-						"albums",
-						"{{album_id}}"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Delete and invalid Album",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 404\", function () {",
-							"   pm.response.to.have.status(404);",
-							"});",
-							"",
-							"pm.test(\"Get expected error message\", function () {",
-							"   var data = pm.response.json();",
-							"   pm.expect(data.message).to.eql(\"The album with the given id was not found\");",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "DELETE",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:3000/api/v1/albums/00000000-0000-0000-0000-000000000000",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "3000",
-					"path": [
-						"api",
-						"v1",
-						"albums",
+						"tracks",
 						"00000000-0000-0000-0000-000000000000"
 					]
 				}
