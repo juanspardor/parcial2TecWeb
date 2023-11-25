@@ -47,8 +47,11 @@ export class AlbumService {
           throw new BusinessLogicException("The album with the given id was not found", BusinessError.NOT_FOUND);
       
         const tracks: TrackEntity[] = album.tracks;
-        if(tracks.length >0 )
+
+        const longitud = tracks.length
+        if(longitud > 0 )
             throw new BusinessLogicException("The album has tracks associated", BusinessError.PRECONDITION_FAILED);
+        
         await this.albumRepository.remove(album);
     }
 

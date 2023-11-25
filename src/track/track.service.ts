@@ -18,11 +18,11 @@ export class TrackService {
 
 
     async findAll(): Promise<TrackEntity[]> {
-        return await this.trackRepository.find({ relations: ["albums"] });
+        return await this.trackRepository.find({ relations: ["album"] });
     }
 
     async findOne(id: string): Promise<TrackEntity> {
-        const track: TrackEntity = await this.trackRepository.findOne({where: {id}, relations: ["albums"] } );
+        const track: TrackEntity = await this.trackRepository.findOne({where: {id}, relations: ["album"] } );
         if (!track)
           throw new BusinessLogicException("The track with the given id was not found", BusinessError.NOT_FOUND);
     
@@ -32,6 +32,7 @@ export class TrackService {
     async create(albumId: string, track: TrackEntity): Promise<TrackEntity> {
         const album: AlbumEntity  = await this.albumService.findOne(albumId)
        
+        album.tracks = [...album.tracks, track]
 
         const duracion = track.duracion;
         if(duracion < 0 )

@@ -6,11 +6,13 @@ import { AlbumEntity } from './album.entity';
 import { faker } from '@faker-js/faker';
 import { Repository } from 'typeorm';
 import { TypeOrmTestingConfig } from '../shared/testing-utils/typeorm-testing-config';
+import { TrackEntity } from '../track/track.entity';
 
 describe('AlbumService', () => {
   let service: AlbumService;
   let repository: Repository<AlbumEntity>;
   let albumsList: AlbumEntity[];
+  let trackRepository: Repository<TrackEntity>;
 
 
 
@@ -22,20 +24,37 @@ describe('AlbumService', () => {
 
     service = module.get<AlbumService>(AlbumService);
     repository = module.get<Repository<AlbumEntity>>(getRepositoryToken(AlbumEntity));
+    trackRepository = module.get<Repository<TrackEntity>>(getRepositoryToken(TrackEntity));
     await seedDatabase();
   });
 
   const seedDatabase =async () => {
+    trackRepository.clear();
+    const track: TrackEntity = await trackRepository.save({
+      nombre: faker.lorem.word(),
+      duracion: faker.number.int()
+    })
+
     repository.clear();
     albumsList = [];
-    for(let i = 0; i<5; i++){
+    for(let i = 0; i<4; i++){
       const album: AlbumEntity = await repository.save({
+        nombre: faker.person.firstName(),
+        caraturla: faker.image.url(),
+        fechaLanzamiento: faker.date.birthdate(),
+        descripcion: faker.lorem.sentence(),
+        tracks: [track]
+      })
+      albumsList.push(album)
+
+      const albumSolo: AlbumEntity = await repository.save({
         nombre: faker.person.firstName(),
         caraturla: faker.image.url(),
         fechaLanzamiento: faker.date.birthdate(),
         descripcion: faker.lorem.sentence()
       })
-      albumsList.push(album)
+
+      albumsList.push(albumSolo)
     }
     
   }
@@ -93,5 +112,22 @@ describe('AlbumService', () => {
   it('findOne should throw an exception for an invalid album', async () => {
     await expect(() => service.findOne("0")).rejects.toHaveProperty("message", "The album with the given id was not found")
   });
+
+
+  it('delete should remove a museum', async () => {
+    const album: AlbumEntity = albumsList[4];
+    await service.delete(album.id);
+  
+    const deletedAlbum: AlbumEntity = await repository.findOne({ where: { id: album.id } })
+    expect(deletedAlbum).toBeNull();
+  });
+
+  it('delete should throw an exception for an invalid museum', async () => {
+    const album: AlbumEntity = albumsList[0];
+    await service.delete(album.id);
+    await expect(() => service.delete("0")).rejects.toHaveProperty("message", "The album with the given id was not found")
+  });
+  
+
 
 });
