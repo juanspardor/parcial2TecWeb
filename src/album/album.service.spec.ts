@@ -62,7 +62,7 @@ describe('AlbumService', () => {
     expect(service).toBeDefined();
   });
 
-  it('should create a album', async () => {
+  it('create shoud return a album', async () => {
     const album = {
       id : "",
       nombre: faker.person.firstName(),
@@ -114,7 +114,7 @@ describe('AlbumService', () => {
   });
 
 
-  it('delete should remove a museum', async () => {
+  it('delete should remove a album', async () => {
     const album: AlbumEntity = albumsList[4];
     await service.delete(album.id);
   
@@ -122,7 +122,7 @@ describe('AlbumService', () => {
     expect(deletedAlbum).toBeNull();
   });
 
-  it('delete should throw an exception for an invalid museum', async () => {
+  it('delete should throw an exception for an invalid album', async () => {
     const album: AlbumEntity = albumsList[0];
     await service.delete(album.id);
     await expect(() => service.delete("0")).rejects.toHaveProperty("message", "The album with the given id was not found")

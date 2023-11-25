@@ -58,7 +58,7 @@ describe('AlbumPerformerService', () => {
       nombre: faker.person.firstName(),
           imagen: faker.image.url(),
           descripcion: faker.lorem.sentence()
-          
+
     })
 
     await expect(() => service.addPerformerToAlbum(album.id, newPerformer.id)).rejects.toHaveProperty("message", "The album exceeds maximum number of performers")
@@ -83,6 +83,14 @@ describe('AlbumPerformerService', () => {
 
   })
 
+  it('addPerformerToAlbum should thrown exception for an invalid performer', async () => {
+    await expect(() => service.addPerformerToAlbum(album.id, "0")).rejects.toHaveProperty("message", "The performer with the given id was not found");
+  });
+
+  it('addPerformerToAlbum should thrown exception for an invalid album', async () => {
+    const performer: PerformerEntity = performersList[0]
+    await expect(() => service.addPerformerToAlbum("0",performer.id)).rejects.toHaveProperty("message", "The album with the given id was not found");
+  });
 
   it('should be defined', () => {
     expect(service).toBeDefined();
