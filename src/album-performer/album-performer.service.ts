@@ -26,8 +26,8 @@ export class AlbumPerformerService {
           throw new BusinessLogicException("The performer with the given id was not found", BusinessError.NOT_FOUND);
      
         
-        if(album.performers.length > 3)
-            throw new BusinessLogicException("The album exceeds maximun number of performers", BusinessError.PRECONDITION_FAILED);
+        if(album.performers.length === 3)
+            throw new BusinessLogicException("The album exceeds maximum number of performers", BusinessError.PRECONDITION_FAILED);
 
 
         album.performers = [...album.performers, performer];
