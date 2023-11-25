@@ -58,6 +58,7 @@ describe('AlbumPerformerService', () => {
       nombre: faker.person.firstName(),
           imagen: faker.image.url(),
           descripcion: faker.lorem.sentence()
+          
     })
 
     await expect(() => service.addPerformerToAlbum(album.id, newPerformer.id)).rejects.toHaveProperty("message", "The album exceeds maximum number of performers")
